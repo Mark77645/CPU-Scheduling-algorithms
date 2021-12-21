@@ -10,7 +10,7 @@ public class PreemptiveSJF {
     repeat
      */
 
-    public static int currentTime = 0, index = 0, latestArrival = 0;
+    public static int currentTime = 0, index = 0;
 
     public ArrayList<Process> processes = new ArrayList<>();
 
