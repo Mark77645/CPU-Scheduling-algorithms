@@ -5,7 +5,7 @@ public ArrayList <Process> processes=new ArrayList<>();
 public static int counter=0;
 public void NPSJF(ArrayList <Process> processes) {
     sortArrivalTime(processes);
-    System.out.println("Process P1 has been sent to cpu with waiting time: "+counter+" and Turnaround time: "+processes.get(0).getBurstTime());
+    System.out.println("Process P1 has been sent to cpu with waiting time: "+counter+" and Turnaround time: "+(processes.get(0).getBurstTime()+counter));
     processes.get(0).setWaitTime(counter); // sets process 1 to '0' wait time
     counter += processes.get(0).getBurstTime();
     processes.remove(0);
@@ -13,7 +13,7 @@ public void NPSJF(ArrayList <Process> processes) {
     for (int i = 0; i < processes.size(); i++) { // p1 0 7  p2 2 4
         processes.get(i).setWaitTime(counter - processes.get(i).getArrivalTime());
         counter += processes.get(i).getBurstTime();
-        System.out.println("process " + processes.get(i).getName() + " has been sent to cpu"+ " with waiting time: " + processes.get(i).getWaitTime() + " and Turnaround time: " +processes.get(i).getBurstTime() );
+        System.out.println("process " + processes.get(i).getName() + " has been sent to cpu"+ " with waiting time: " + processes.get(i).getWaitTime() + " and Turnaround time: " +(processes.get(i).getBurstTime()+processes.get(i).getWaitTime()) );
     }
     System.out.println("Average waiting time is: "+ calculateAverageWaitingTime(processes));
     System.out.println("Average Turnaround time is: "+ calculateAverageTurnAroundTime(processes));
@@ -68,15 +68,15 @@ public int calculateAverageWaitingTime(ArrayList <Process> processes){
     for (Process p: processes){
         average+=p.getWaitTime();
     }
-    average=average/ (processes.size() +1);
+    average=average/ (processes.size()+1);
     return average;
 }
 public int calculateAverageTurnAroundTime(ArrayList <Process> processes){
     int average=0;
     for (Process p: processes){
-        average+=p.getBurstTime();
+        average = average + p.getWaitTime() + p.getBurstTime();
     }
-    average=average/ (processes.size() +1);
+    average=average/ (processes.size());
     return average;
 }
 }
