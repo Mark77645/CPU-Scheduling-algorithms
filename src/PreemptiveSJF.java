@@ -14,7 +14,6 @@ public class PreemptiveSJF {
 
     public void SRTF(ArrayList<Process> processes) {
         sortArrivalTime(processes);
-        int temp = 0;
         for (int i = 0; i < processes.size()-1; i++) {
             currentTime = processes.get(i).getArrivalTime();
             index = shortestBurstTime(processes); //returns the shortest burst time index in all processes at current time
@@ -32,9 +31,9 @@ public class PreemptiveSJF {
             }
 
         }
-        for (int i =0; i< processes.size();i++) {
-            if (processes.get(i).getBurstTime() <= 0) {
-                System.out.println("process " + processes.get(i).getName() + " turnaround time is " + processes.get(i).getTurnAroundTime() + " and waiting time is "+processes.get(i).getWaitTime());
+        for (Process process : processes) {
+            if (process.getBurstTime() <= 0) {
+                System.out.println("process " + process.getName() + " turnaround time is " + process.getTurnAroundTime() + " and waiting time is " + process.getWaitTime());
             }
         }
         sortBurstTime(processes);
