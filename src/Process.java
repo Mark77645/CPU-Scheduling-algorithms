@@ -4,7 +4,17 @@ public class Process {
     private int burstTime;
     private int arrivalTime;
     private int priority;
-    private int waitTime;
+    private int waitTime; // Start - Arrival OR Turnaround - Burst
+    private int turnAroundTime; // Waiting + Burst OR Finish - Arrival
+
+
+    public int getTurnAroundTime() {
+        return turnAroundTime;
+    }
+
+    public void setTurnAroundTime(int turnAroundTime) {
+        this.turnAroundTime = turnAroundTime;
+    }
 
     public String getName() {
         return name;

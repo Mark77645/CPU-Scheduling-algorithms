@@ -10,38 +10,55 @@ public class PreemptiveSJF {
     repeat
      */
 
-    public static int currentTime = 0, index = 0;
-
-    public ArrayList<Process> processes = new ArrayList<>();
+    public static int currentTime = 0, index = 0 , time=0;
 
     public void SRTF(ArrayList<Process> processes) {
         sortArrivalTime(processes);
-        int h = processes.size()-1;
-        for (int i = 0; i < h; i++) {
+        int temp = 0;
+        for (int i = 0; i < processes.size()-1; i++) {
             currentTime = processes.get(i).getArrivalTime();
             index = shortestBurstTime(processes); //returns the shortest burst time index in all processes at current time
+            if (processes.get(index).getArrivalTime()==currentTime){
+                processes.get(index).setWaitTime(time);
+                //System.out.println(processes.get(index).getName()+" "+processes.get(index).getWaitTime());
+            }
             System.out.print("process " + processes.get(index).getName() + " entered the CPU for " + (processes.get(i+1).getArrivalTime() - processes.get(i).getArrivalTime()) + " unit Time");
-            processes.get(index).setBurstTime(processes.get(index).getBurstTime() - (processes.get(i+1).getArrivalTime() - processes.get(i).getArrivalTime()));
+            time+=processes.get(i+1).getArrivalTime() - processes.get(i).getArrivalTime();
+            processes.get(index).setBurstTime(processes.get(index).getBurstTime() - (processes.get(i+1).getArrivalTime() - processes.get(i).getArrivalTime())); //Burst can be negative value
             System.out.println(", " + processes.get(index).getBurstTime() + " left");
+            if (processes.get(index).getBurstTime() <= 0) {
+                processes.get(index).setTurnAroundTime(time - processes.get(index).getArrivalTime());
+            }
+
         }
-        for (int i =0; i< processes.size();i++){
+        for (int i =0; i< processes.size();i++) {
             if (processes.get(i).getBurstTime() <= 0) {
-                processes.remove(i);
+                System.out.println("process " + processes.get(i).getName() + " turnaround time is " + processes.get(i).getTurnAroundTime() + " and waiting time is "+processes.get(i).getWaitTime());
             }
         }
-
         sortBurstTime(processes);
         for (Process p : processes) {
-            System.out.println("process " + p.getName() + " entered the CPU for " + p.getBurstTime() + " unit");
-        }
+            if (p.getBurstTime()<=0) {
+                continue;
+            }
+            if (p.getWaitTime()==0 && p.getArrivalTime()!=0){
+                p.setWaitTime(time);
+                //System.out.println(p.getName()+" "+p.getWaitTime());
+            }
+            time+=p.getBurstTime(); // Like the "Non-Preemptive".
+            p.setTurnAroundTime(time-p.getArrivalTime());
+            System.out.println("process " + p.getName() + " entered the CPU for " + p.getBurstTime() + " unit with turnaround time= "+p.getTurnAroundTime()+" and waiting time= "+p.getWaitTime());
 
+        }
+        System.out.println("Average waiting time is: "+ calculateAverageWaitingTime(processes));
+        System.out.println("Average Turnaround time is: "+ calculateAverageTurnAroundTime(processes));
     }
 
     private int shortestBurstTime(ArrayList<Process> processes) {
         int shortestBurstTime = processes.get(0).getBurstTime();
         int shortestBurstTimeIndex = 0;
         for (int i = 0; i < processes.size(); i++) {
-            if ((processes.get(i).getBurstTime() <= shortestBurstTime) && processes.get(i).getBurstTime() != 0&& (processes.get(i).getArrivalTime() <= currentTime)) {
+            if ((processes.get(i).getBurstTime() <= shortestBurstTime) && processes.get(i).getBurstTime() != 0 && (processes.get(i).getArrivalTime() <= currentTime)) {
                 shortestBurstTime = processes.get(i).getBurstTime();
                 shortestBurstTimeIndex = i;
             }
@@ -89,5 +106,25 @@ public class PreemptiveSJF {
         }
     }
 
-
+    public int calculateAverageWaitingTime(ArrayList <Process> processes){
+        int average=0;
+        for (Process p: processes){
+            average+=p.getWaitTime();
+        }
+        average=average/ (processes.size());
+        return average;
+    }
+    public int calculateAverageTurnAroundTime(ArrayList <Process> processes){
+        int average=0;
+        for (Process p: processes){
+            average = average + p.getTurnAroundTime();
+        }
+        average=average/ (processes.size());
+        return average;
+    }
+/*    public void setWaitingTimes(ArrayList<Process> processes){
+        for ( Process p: processes){
+            p.setWaitTime(p.getTurnAroundTime() - p.getBurstTime());
+        }
+    }*/
 }
