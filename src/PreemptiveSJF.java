@@ -10,7 +10,7 @@ public class PreemptiveSJF {
     repeat
      */
 
-    public static int currentTime = 0, index = 0 , time=0;
+    public static int currentTime = 0, index = 0 , time=0 ;
 
     public void SRTF(ArrayList<Process> processes) {
         sortArrivalTime(processes);
@@ -18,14 +18,15 @@ public class PreemptiveSJF {
         for (int i = 0; i < processes.size()-1; i++) {
             currentTime = processes.get(i).getArrivalTime();
             index = shortestBurstTime(processes); //returns the shortest burst time index in all processes at current time
+            //That means this condition will be true only once for each process that will be sent to the cpu
             if (processes.get(index).getArrivalTime()==currentTime){
                 processes.get(index).setWaitTime(time);
-                //System.out.println(processes.get(index).getName()+" "+processes.get(index).getWaitTime());
             }
             System.out.print("process " + processes.get(index).getName() + " entered the CPU for " + (processes.get(i+1).getArrivalTime() - processes.get(i).getArrivalTime()) + " unit Time");
             time+=processes.get(i+1).getArrivalTime() - processes.get(i).getArrivalTime();
             processes.get(index).setBurstTime(processes.get(index).getBurstTime() - (processes.get(i+1).getArrivalTime() - processes.get(i).getArrivalTime())); //Burst can be negative value
             System.out.println(", " + processes.get(index).getBurstTime() + " left");
+            // Condition that checks whether a process has finished its burst or not, in order to set its turnaround time.
             if (processes.get(index).getBurstTime() <= 0) {
                 processes.get(index).setTurnAroundTime(time - processes.get(index).getArrivalTime());
             }
@@ -41,11 +42,12 @@ public class PreemptiveSJF {
             if (p.getBurstTime()<=0) {
                 continue;
             }
+            // Setting the wait time for all the processes that didn't enter the above for loop and has arrival time greater than zero.
             if (p.getWaitTime()==0 && p.getArrivalTime()!=0){
                 p.setWaitTime(time);
-                //System.out.println(p.getName()+" "+p.getWaitTime());
             }
-            time+=p.getBurstTime(); // Like the "Non-Preemptive".
+            // Like the "Non-Preemptive".
+            time+=p.getBurstTime();
             p.setTurnAroundTime(time-p.getArrivalTime());
             System.out.println("process " + p.getName() + " entered the CPU for " + p.getBurstTime() + " unit with turnaround time= "+p.getTurnAroundTime()+" and waiting time= "+p.getWaitTime());
 
@@ -122,9 +124,4 @@ public class PreemptiveSJF {
         average=average/ (processes.size());
         return average;
     }
-/*    public void setWaitingTimes(ArrayList<Process> processes){
-        for ( Process p: processes){
-            p.setWaitTime(p.getTurnAroundTime() - p.getBurstTime());
-        }
-    }*/
 }
