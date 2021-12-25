@@ -41,7 +41,7 @@ public class PreemptiveSJF {
             if (p.getBurstTime()<=0) {
                 continue;
             }
-            // Setting the wait time for all the processes that didn't enter the above for loop and has arrival time greater than zero.
+            // Setting the wait time for all the processes that didn't finish their burst time in the above for loop and has arrival time greater than zero.
             if (p.getWaitTime()==0 && p.getArrivalTime()!=0){
                 p.setWaitTime(time);
             }
